@@ -24,7 +24,7 @@ var MapChart = function() {
     var csvFile;
 
     //Controls the color of the map.
-    var color = d3.scaleThreshold().domain(d3.range(101600, 597700, 800)).range(d3.schemeRdBu[6]);
+    var color = d3.scaleThreshold().domain(d3.range(101600, 597700, 100000)).range(d3.schemeRdBu[6]);
 
     var chart = function(selection) {
         var chartHeight = height - margin.top - margin.bottom;
@@ -40,6 +40,7 @@ var MapChart = function() {
                     //console.log(d);
                     var fips = d['countyFips'];
                     var zhviValue = d.Zhvi;
+                    //console.log(zhviValue);
                     if (fips.length == 4) {
                         fips = "0" + fips;
                         //console.log(fips);
@@ -102,6 +103,8 @@ var MapChart = function() {
                         .data(topojson.feature(us, us.objects.counties).features)
                         .enter().append('path')
                         .attr('fill', function(d) {
+                            console.log(d.id)
+                            console.log(fipsDataMap.get(d.id));
                             return color(fipsDataMap.get(d.id));
                         })
                         .attr('d', path);
