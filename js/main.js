@@ -22,4 +22,9 @@ $(function() {
 
         charts.exit().remove();
     });
+
+    // event listeners for UI components
+    $('.btn').click(function() {
+        alert('I\'m clicked!');
+    });
 });
