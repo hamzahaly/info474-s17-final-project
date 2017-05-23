@@ -10,14 +10,21 @@ var MapChart = function() {
         right: 10
     };
 
-    var view;
+    //Controls whether you see a state view or county view. [Default = true]
+    var stateView = true;
+
+    //Controls wheter you see a state view or county view. [Default = false]
+    var countyView = false;
+
     //This refers to how the data will be mapped. For the id of each location, we will provide
     //data for that by setting and getting.
-    var fill;
+    var fipsDataMap = d3.map();
 
+    //Specifies the csv file to read
     var csvFile;
 
-    var color;
+    //Controls the color of the map.
+    var color = d3.scaleThreshold().domain([0, 100]).range(d3.schemeRdBu[6]);
 
     var chart = function(selection) {
         var chartHeight = height - margin.top - margin.bottom;
@@ -28,13 +35,21 @@ var MapChart = function() {
         selection.each(function(data) {
             d3.queue()
                 .defer(d3.json, "https://d3js.org/us-10m.v1.json")
-                .defer(d3.csv, "data/State_Zhvi_Summary_AllHomes.csv", function(d) {
-
+                .defer(d3.csv, csvFile, function(d) {
+                    console.log(d);
                 })
                 .await(ready);
 
             var homeData = data;
-            console.log(homeData);
+
+            //Logic for getting min and max from dataset that contains comparable values
+            var zhvi = [];
+            
+            homeData.forEach(function(element) {
+                zhvi.push(element.Zhvi);
+            }, this);
+
+            var min = d3.min(zhvi);
 
             function ready(error, us) {
                 if (error) throw error;
@@ -49,13 +64,22 @@ var MapChart = function() {
                     .attr('width', width)
                     .attr('height', height);
                 
-                //Renders borders
-                svgEnter.append('g')
-                    .attr('class', 'counties')
-                    .selectAll('path')
-                    .data(topojson.feature(us, us.objects.states).features)
-                    .enter().append('path')
-                    .attr('d', path);
+                if (stateView) {
+                    //Renders borders
+                    svgEnter.append('g')
+                        .attr('class', 'states')
+                        .selectAll('path')
+                        .data(topojson.feature(us, us.objects.states).features)
+                        .enter().append('path')
+                        .attr('d', path);
+                } else if (countyView) {
+                    svgEnter.append('g')
+                        .attr('class', 'counties')
+                        .selectAll('path')
+                        .data(topojson.feature(us, us.objects.counties).features)
+                        .enter().append('path')
+                        .attr('d', path);
+                };
                 
                 svgEnter.append('path')
                     .data(topojson.mesh(us, us.objects.states, function(a, b) {
@@ -76,6 +100,26 @@ var MapChart = function() {
     chart.width = function(value) {
         if (!arguments.length) return width;
         width = value;
+        return chart;
+    };
+
+    chart.stateView = function(value) {
+        if (!arguments.length) return stateView;
+        stateView = value;
+        countyView = false;
+        return chart;
+    };
+
+    chart.countyView = function(value) {
+        if (!arguments.length) return countyView;
+        countyView = value;
+        stateView = false;
+        return chart;
+    };
+
+    chart.csvFile = function(value) {
+        if (!arguments.length) return csvFile;
+        csvFile = value;
         return chart;
     };
 
