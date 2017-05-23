@@ -9,7 +9,7 @@ $(function() {
         
         var map = MapChart().width(960).height(600);
 
-        map.csvFile("data/State_Zhvi_Summary_AllHomes.csv")
+        map.csvFile("data/zillow_prep.csv")
         map.stateView(true);
 
         var charts = d3.select('#viz').selectAll('.chart')

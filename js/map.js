@@ -36,13 +36,15 @@ var MapChart = function() {
             d3.queue()
                 .defer(d3.json, "https://d3js.org/us-10m.v1.json")
                 .defer(d3.csv, csvFile, function(d) {
-                    console.log(d);
                     //Logic for applying the mapping of fips codes to the zhvi values
-                    var fips;
+                    var fips = d['countyFips'];
                     var zhviValue = d.Zhvi;
+                    if (fips.length == 4) {
+                        fips = "0" + fips;
+                    };
                     console.log(zhviValue);
 
-
+                    fipsDataMap.set(fips, zhviValue);
                 })
                 .await(ready);
 
@@ -54,8 +56,10 @@ var MapChart = function() {
             homeData.forEach(function(element) {
                 zhvi.push(element.Zhvi);
             }, this);
-
+            
             var min = d3.min(zhvi);
+            var max = d3.max(zhvi);
+           
 
             //Ready function after the d3.queue logic for getting us projection information
             function ready(error, us) {
@@ -96,9 +100,6 @@ var MapChart = function() {
                     }))
                     .attr('class', 'states')
                     .attr('d', path);
-                
-                
-                
             };
         });
     };
