@@ -11,9 +11,11 @@
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="https://d3js.org/topojson.v2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 
     <!--CSS Files-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="css/main.css"/>
 
     <!--Script Files-->
@@ -22,7 +24,41 @@
 
 </head>
 <body>
-    <h1>Reusable Map Chart</h1>
-    <div id="viz"></div>
+    <div class="container">
+        <div class="row">
+            <section class="col-md-6 col-md-offset-3">
+                <h1>Reusable Map Chart</h1>
+                <p>
+                    Brief description about this project. 
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                </p>             
+            </section>
+        </div>
+        <div class="row">
+            <aside class="col-md-2">
+                <h5>Filters</h5>
+                <button type="button" class="btn btn-primary" id="button1">Primary</button>
+                <br/>
+                <br/>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Dropdown
+                    <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">option 1</a></li>
+                        <li><a href="#">option 2</a></li>
+                        <li><a href="#">option 3</a></li>
+                    </ul>
+                </div>                  
+            </aside>
+            <section class="col-md-10">
+                <div id="viz"></div>
+            </section>
+        </div>
+    </div>
 </body>
 </html>
