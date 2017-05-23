@@ -37,6 +37,12 @@ var MapChart = function() {
                 .defer(d3.json, "https://d3js.org/us-10m.v1.json")
                 .defer(d3.csv, csvFile, function(d) {
                     console.log(d);
+                    //Logic for applying the mapping of fips codes to the zhvi values
+                    var fips;
+                    var zhviValue = d.Zhvi;
+                    console.log(zhviValue);
+
+
                 })
                 .await(ready);
 
@@ -51,19 +57,22 @@ var MapChart = function() {
 
             var min = d3.min(zhvi);
 
+            //Ready function after the d3.queue logic for getting us projection information
             function ready(error, us) {
                 if (error) throw error;
                 //console.log(us);
 
-                //Data for maps is passed as topojson
+                //Svg of all of the div chart elements created in main.js
                 var svg = d3.selectAll('.chart')
                     .data([homeData]);
                 
+                //svg for the map to be contained in
                 var svgEnter = svg
                     .append('svg')
                     .attr('width', width)
                     .attr('height', height);
                 
+                //If state view is true, render map with state borders, else with county borders
                 if (stateView) {
                     //Renders borders
                     svgEnter.append('g')
@@ -87,10 +96,14 @@ var MapChart = function() {
                     }))
                     .attr('class', 'states')
                     .attr('d', path);
+                
+                
+                
             };
         });
     };
 
+    //Chain Functions
     chart.height = function(value) {
         if (!arguments.length) return height;
         height = value;
