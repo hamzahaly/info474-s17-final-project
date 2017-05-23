@@ -24,7 +24,7 @@ var MapChart = function() {
     var csvFile;
 
     //Controls the color of the map.
-    var color = d3.scaleThreshold().domain([0, 100]).range(d3.schemeRdBu[6]);
+    var color = d3.scaleThreshold().domain(d3.range(101600, 597700, 800)).range(d3.schemeRdBu[6]);
 
     var chart = function(selection) {
         var chartHeight = height - margin.top - margin.bottom;
@@ -37,14 +37,20 @@ var MapChart = function() {
                 .defer(d3.json, "https://d3js.org/us-10m.v1.json")
                 .defer(d3.csv, csvFile, function(d) {
                     //Logic for applying the mapping of fips codes to the zhvi values
+                    //console.log(d);
                     var fips = d['countyFips'];
                     var zhviValue = d.Zhvi;
                     if (fips.length == 4) {
                         fips = "0" + fips;
+                        //console.log(fips);
                     };
-                    console.log(zhviValue);
+                    //console.log(zhviValue);
 
-                    fipsDataMap.set(fips, zhviValue);
+                    if (fips.length == 5) {
+                        fipsDataMap.set(fips, +zhviValue);
+                        //console.log(fipsDataMap);
+                    };
+
                 })
                 .await(ready);
 
@@ -56,15 +62,14 @@ var MapChart = function() {
             homeData.forEach(function(element) {
                 zhvi.push(element.Zhvi);
             }, this);
-            
+
             var min = d3.min(zhvi);
             var max = d3.max(zhvi);
            
-
             //Ready function after the d3.queue logic for getting us projection information
             function ready(error, us) {
                 if (error) throw error;
-                //console.log(us);
+                console.log(us);
 
                 //Svg of all of the div chart elements created in main.js
                 var svg = d3.selectAll('.chart')
@@ -77,6 +82,7 @@ var MapChart = function() {
                     .attr('height', height);
                 
                 //If state view is true, render map with state borders, else with county borders
+                //id comes from the us object
                 if (stateView) {
                     //Renders borders
                     svgEnter.append('g')
@@ -84,6 +90,10 @@ var MapChart = function() {
                         .selectAll('path')
                         .data(topojson.feature(us, us.objects.states).features)
                         .enter().append('path')
+                        .attr('fill', function(d) {
+                            //console.log(d);
+                            return color(fipsDataMap.get(d.id));
+                        })
                         .attr('d', path);
                 } else if (countyView) {
                     svgEnter.append('g')
@@ -91,6 +101,9 @@ var MapChart = function() {
                         .selectAll('path')
                         .data(topojson.feature(us, us.objects.counties).features)
                         .enter().append('path')
+                        .attr('fill', function(d) {
+                            return color(fipsDataMap.get(d.id));
+                        })
                         .attr('d', path);
                 };
                 
