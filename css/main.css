@@ -88,3 +88,11 @@ sup {
 sub {
 	bottom: -0.25em;
 }
+
+.counties :hover {
+	opacity: 0.75;
+}
+
+.states :hover {
+	opacity: 0.75;
+}
