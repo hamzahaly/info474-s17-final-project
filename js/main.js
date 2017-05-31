@@ -3,14 +3,16 @@ $(function() {
 
     //Use bracket notation for 1 map
     //Use data for multiple maps
+    
+    var csvFile = "data/census_prep_data.csv";
 
-    d3.csv("data/State_Zhvi_Summary_AllHomes.csv", function(error, data) {
+
+    d3.csv(csvFile, function(error, data) {
         var homeValue = d3.map();
         
         var map = MapChart().width(960).height(600);
         var nationView = true;
         //CSV file needs to change if you want ZHVI values or any other data value
-        var csvFile = "data/census_prep_data.csv";
 
         map.csvFile(csvFile);
 

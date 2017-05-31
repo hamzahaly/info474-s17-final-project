@@ -11,9 +11,14 @@ var MapChart = function() {
         right: 10
     };
     
-    //*****************
     //Filter
-    var filter = 'Total population';
+    var filter = 'Median household income';
+
+    //Minimum value in filtered dataset
+    var min;
+
+    //Maximum value in filtered dataset
+    var max;
 
     //Controls the view for seeing Washington state only
     var washingtonView = false;
@@ -93,14 +98,42 @@ var MapChart = function() {
             // filterData();
 
             //Logic for getting min and max from dataset that contains comparable values
-            var zhvi = [];
-            
-            homeData.forEach(function(element) {
-                zhvi.push(element.Zhvi);
-            }, this);
 
-            var min = d3.min(zhvi);
-            var max = d3.max(zhvi);
+            var getMinMax = function() {
+                var array = [];
+
+                homeData.forEach(function(element) {
+                    console.log(element);
+                    //array.push(element);
+                    switch(filter) {
+                    case 'Total population':
+                        array.push(+element['Total population'])
+                        break;
+                    case 'Median household income':
+                        array.push(+element['Median household income'])
+                        break;
+                    case 'Median home value':
+                        array.push(+element['Median home value'])
+                        break;
+                    case 'Zhvi':
+                        array.push(+element.Zhvi)
+                        break;
+                    default:
+                        break;
+                };
+                }, this);
+
+                min = d3.min(array);
+                max = d3.max(array);
+                console.log(min)
+                console.log(max);
+            };
+
+            //Get a new min and max every time a new filter is chosen. Probably used in a click function later.
+            getMinMax();
+
+            //Set Color
+            color = d3.scaleThreshold().domain(d3.range(min, max, 20000)).range(d3.schemeRdBu[6])
             
             //Logic for applying the mapping of fips codes to the zhvi values
             var fixFIPS = function(fipsParam, d) {
@@ -143,8 +176,6 @@ var MapChart = function() {
                 var draw = function(fipsMap) {
                     //If state view is true, render map with state borders, else with county borders
                     //id comes from the us object
-                    //**************** NEED TO FIGURE OUT HOW TO COLOR BASED ON THE FIPS MAP.
-                    //FipsMap was changed
                     if (stateView) {
                         //Renders borders
                         svgEnter.append('g')
@@ -163,7 +194,6 @@ var MapChart = function() {
                             .data(topojson.feature(us, us.objects.counties).features)
                             .enter().append('path')
                             .attr('fill', function(d) {
-                                console.log(fipsMap);
                                 return color(fipsMap.get(d.id));
                             })
                             .attr('d', path);
