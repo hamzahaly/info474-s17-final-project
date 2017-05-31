@@ -8,10 +8,17 @@ $(function() {
         var homeValue = d3.map();
         
         var map = MapChart().width(960).height(600);
+        var nationView = true;
+        var csvFile = "data/census_prep_data.csv";
 
-        map.csvFile("data/zillow_prep.csv")
-        //map.countyView(true);
-        map.individualView(true);
+        map.csvFile(csvFile);
+
+        if (nationView) {
+            map.countyView(true);
+        } else {
+            map.washingtonView(true);
+        };
+
 
         var charts = d3.select('#viz').selectAll('.chart')
             .data([data]);
