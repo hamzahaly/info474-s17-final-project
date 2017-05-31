@@ -9,6 +9,8 @@ var MapChart = function() {
         top: 10,
         right: 10
     };
+    
+    var individualView = false;
 
     //Controls whether you see a state view or county view. [Default = true]
     var stateView = true;
@@ -29,29 +31,29 @@ var MapChart = function() {
     var chart = function(selection) {
         var chartHeight = height - margin.top - margin.bottom;
         var chartWidth = width - margin.left - margin.right;
-
-        var path = d3.geoPath();
+        
+        var projection = d3.geoAlbersUsa().scale(7000).translate([2300, 680]);
+        var path = d3.geoPath().projection(projection);
 
         selection.each(function(data) {
+            //Need to use if statement to decide which json file to defer
             d3.queue()
-                .defer(d3.json, "https://d3js.org/us-10m.v1.json")
+                //.defer(d3.json, "https://gist.githubusercontent.com/martinbel/e14cd6ecd565914f53af/raw/e3a3a8332c20fe3cee6d7fd2a9ac01ad43f7aaa4/WA.topojson")
+                //.defer(d3.json, "https://d3js.org/us-10m.v1.json")
+                .defer(d3.json, "topojson/cb_2016_53_tract_500k.json")
+                //.defer(d3.json, "topojson/washington-topo.json")
+                //.defer(d3.json, "https://raw.githubusercontent.com/deldersveld/topojson/master/countries/us-states/WA-53-washington-counties.json")
                 .defer(d3.csv, csvFile, function(d) {
                     //Logic for applying the mapping of fips codes to the zhvi values
-                    //console.log(d);
                     var fips = d['countyFips'];
                     var zhviValue = d.Zhvi;
-                    //console.log(zhviValue);
                     if (fips.length == 4) {
                         fips = "0" + fips;
-                        //console.log(fips);
                     };
-                    //console.log(zhviValue);
 
                     if (fips.length == 5) {
-                        fipsDataMap.set(fips, +zhviValue);
-                        //console.log(fipsDataMap);
+                        fipsDataMap.set(+fips, +zhviValue);
                     };
-
                 })
                 .await(ready);
 
@@ -92,10 +94,11 @@ var MapChart = function() {
                         .data(topojson.feature(us, us.objects.states).features)
                         .enter().append('path')
                         .attr('fill', function(d) {
-                            //console.log(d);
                             return color(fipsDataMap.get(d.id));
                         })
-                        .attr('d', path);
+                        .attr('d', path)
+                        //.attr('transform', 'scale(0.1)');
+
                 } else if (countyView) {
                     svgEnter.append('g')
                         .attr('class', 'counties')
@@ -103,19 +106,28 @@ var MapChart = function() {
                         .data(topojson.feature(us, us.objects.counties).features)
                         .enter().append('path')
                         .attr('fill', function(d) {
-                            console.log(d.id)
-                            console.log(fipsDataMap.get(d.id));
+                            return color(fipsDataMap.get(d.id));
+                        })
+                        .attr('d', path);
+                } else if (individualView) {
+                    svgEnter.append('g')
+                        .attr('class', 'counties')
+                        .attr('transform', 'translate(200, 920) rotate(-13)')
+                        .selectAll('path')
+                        .data(topojson.feature(us, us.objects.cb_2016_53_tract_500k).features)
+                        .enter().append('path')
+                        .attr('fill', function(d) {
                             return color(fipsDataMap.get(d.id));
                         })
                         .attr('d', path);
                 };
                 
-                svgEnter.append('path')
-                    .data(topojson.mesh(us, us.objects.states, function(a, b) {
-                        return a !== b;
-                    }))
-                    .attr('class', 'states')
-                    .attr('d', path);
+                // svgEnter.append('path')
+                //     .data(topojson.mesh(us, us.objects.states, function(a, b) {
+                //         return a !== b;
+                //     }))
+                //     .attr('class', 'states')
+                //     .attr('d', path);
             };
         });
     };
@@ -150,6 +162,13 @@ var MapChart = function() {
     chart.csvFile = function(value) {
         if (!arguments.length) return csvFile;
         csvFile = value;
+        return chart;
+    };
+
+    chart.individualView = function(value) {
+        if (!arguments.length) return individualView;
+        individualView = value;
+        stateView = false;
         return chart;
     };
 

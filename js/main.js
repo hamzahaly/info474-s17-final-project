@@ -10,7 +10,8 @@ $(function() {
         var map = MapChart().width(960).height(600);
 
         map.csvFile("data/zillow_prep.csv")
-        map.countyView(true);
+        //map.countyView(true);
+        map.individualView(true);
 
         var charts = d3.select('#viz').selectAll('.chart')
             .data([data]);
