@@ -9,6 +9,7 @@ $(function() {
         
         var map = MapChart().width(960).height(600);
         var nationView = true;
+        //CSV file needs to change if you want ZHVI values or any other data value
         var csvFile = "data/census_prep_data.csv";
 
         map.csvFile(csvFile);

@@ -1,4 +1,5 @@
 var MapChart = function() {
+
     //Set default values
     var height = 600;
     var width = 960;
@@ -10,6 +11,11 @@ var MapChart = function() {
         right: 10
     };
     
+    //*****************
+    //Filter
+    var filter = 'Total population';
+
+    //Controls the view for seeing Washington state only
     var washingtonView = false;
 
     //Controls whether you see a state view or county view. [Default = true]
@@ -26,10 +32,13 @@ var MapChart = function() {
     var fipsMedHomeVal = d3.map();
     var fipsCounty = d3.map();
 
+    var fipsMap;
+
     //Specifies the csv file to read
     var csvFile;
 
-    //Controls the color of the map.
+    //***************
+    //Controls the color of the map. Need to change the scale whenever the data changes as well.
     var color = d3.scaleThreshold().domain(d3.range(101600, 597700, 100000)).range(d3.schemeRdBu[6]);
 
     var chart = function(selection) {
@@ -53,7 +62,7 @@ var MapChart = function() {
                 d3.queue()
                     .defer(d3.json, "https://d3js.org/us-10m.v1.json")
                     .defer(d3.csv, csvFile, function(d) {
-                        if (csvFile == 'data/zillow_prep_data.csv') {
+                        if (csvFile == 'data/zillow_prep.csv') {
                             fixFIPS('countyFips', d);
                         } else {
                             fixFIPS('FIPS', d);
@@ -64,7 +73,7 @@ var MapChart = function() {
                 d3.queue()
                     .defer(d3.json, "data/cb_2016_53_cousub_500k.json")
                     .defer(d3.csv, csvFile, function(d) {
-                        if (csvFile == 'data/zillow_prep_data.csv') {
+                        if (csvFile == 'data/zillow_prep.csv') {
                             fixFIPS('countyFips', d);
                         } else {
                             fixFIPS('FIPS', d);
@@ -74,6 +83,14 @@ var MapChart = function() {
             };
 
             var homeData = data;
+            // var filterData = function() {
+            //     var filteredData = homeData.filter(function(d) {
+
+            //     });
+            //     return filterData;
+            // };
+
+            // filterData();
 
             //Logic for getting min and max from dataset that contains comparable values
             var zhvi = [];
@@ -99,11 +116,11 @@ var MapChart = function() {
                 };
 
                 if (fips.length == 5) {
-                    fipsZhvi.set(+fips, +zhviValue);
-                    fipsPop.set(+fips, +pop);
-                    fipsCounty.set(+fips, county);
-                    fipsMedHomeVal.set(+fips, +medianHomeVal);
-                    fipsMedIncome.set(+fips, +medianIncome);
+                    fipsZhvi.set(fips, +zhviValue);
+                    fipsPop.set(fips, +pop);
+                    fipsCounty.set(fips, county);
+                    fipsMedHomeVal.set(fips, +medianHomeVal);
+                    fipsMedIncome.set(fips, +medianIncome);
                 };
             };
 
@@ -122,48 +139,71 @@ var MapChart = function() {
                     .attr('width', width)
                     .attr('height', height);
                 
-                //If state view is true, render map with state borders, else with county borders
-                //id comes from the us object
-                if (stateView) {
-                    //Renders borders
-                    svgEnter.append('g')
-                        .attr('class', 'states')
-                        .selectAll('path')
-                        .data(topojson.feature(us, us.objects.states).features)
-                        .enter().append('path')
-                        .attr('fill', function(d) {
-                            return color(fipsZhvi.get(d.id));
-                        })
-                        .attr('d', path)
-                } else if (countyView) {
-                    svgEnter.append('g')
-                        .attr('class', 'counties')
-                        .selectAll('path')
-                        .data(topojson.feature(us, us.objects.counties).features)
-                        .enter().append('path')
-                        .attr('fill', function(d) {
-                            return color(fipsZhvi.get(d.id));
-                        })
-                        .attr('d', path);
-                } else if (washingtonView) {
-                    svgEnter.append('g')
-                        .attr('class', 'counties')
-                        .attr('transform', 'translate(475, 1080) rotate(-13)')
-                        .selectAll('path')
-                        .data(topojson.feature(us, us.objects.cb_2016_53_cousub_500k).features)
-                        .enter().append('path')
-                        .attr('fill', function(d) {
-                            return color(fipsZhvi.get(d.id));
-                        })
-                        .attr('d', path);
+
+                var draw = function(fipsMap) {
+                    //If state view is true, render map with state borders, else with county borders
+                    //id comes from the us object
+                    //**************** NEED TO FIGURE OUT HOW TO COLOR BASED ON THE FIPS MAP.
+                    //FipsMap was changed
+                    if (stateView) {
+                        //Renders borders
+                        svgEnter.append('g')
+                            .attr('class', 'states')
+                            .selectAll('path')
+                            .data(topojson.feature(us, us.objects.states).features)
+                            .enter().append('path')
+                            .attr('fill', function(d) {
+                                return color(fipsMap.get(d.id));
+                            })
+                            .attr('d', path)
+                    } else if (countyView) {
+                        svgEnter.append('g')
+                            .attr('class', 'counties')
+                            .selectAll('path')
+                            .data(topojson.feature(us, us.objects.counties).features)
+                            .enter().append('path')
+                            .attr('fill', function(d) {
+                                console.log(fipsMap);
+                                return color(fipsMap.get(d.id));
+                            })
+                            .attr('d', path);
+                    } else if (washingtonView) {
+                        svgEnter.append('g')
+                            .attr('class', 'counties')
+                            .attr('transform', 'translate(475, 1080) rotate(-13)')
+                            .selectAll('path')
+                            .data(topojson.feature(us, us.objects.cb_2016_53_cousub_500k).features)
+                            .enter().append('path')
+                            .attr('fill', function(d) {
+                                return color(fipsMap.get(d.id));
+                            })
+                            .attr('d', path);
+                    };
+                    
+                    // svgEnter.append('path')
+                    //     .data(topojson.mesh(us, us.objects.states, function(a, b) {
+                    //         return a !== b;
+                    //     }))
+                    //     .attr('class', 'states')
+                    //     .attr('d', path);
                 };
-                
-                // svgEnter.append('path')
-                //     .data(topojson.mesh(us, us.objects.states, function(a, b) {
-                //         return a !== b;
-                //     }))
-                //     .attr('class', 'states')
-                //     .attr('d', path);
+
+                switch(filter) {
+                    case 'Total population':
+                        draw(fipsPop)
+                        break;
+                    case 'Median household income':
+                        draw(fipsMedIncome)
+                        break;
+                    case 'Median home value':
+                        draw(fipsMedHomeVal)
+                        break;
+                    case 'Zhvi':
+                        draw(fipsZhvi);
+                        break;
+                    default:
+                        break;
+                };
             };
         });
     };
