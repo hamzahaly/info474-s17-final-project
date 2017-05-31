@@ -11,6 +11,23 @@ var MapChart = function() {
         right: 10
     };
     
+    //Legend
+    //************** Needs to find a way to determine domain based on data */
+    var legendTitle;
+
+    // var thresholdScale = d3.scaleThreshold()
+    //     .domain()
+    //     .range(d3.schemeRdBu[6])
+
+    // var legend = d3.legendColor()
+    //     .labelFormat(d3.format(".0f"))
+    //     .labels(d3.legendHelpers.thresholdLabels)
+    //     .scale(thresholdScale)
+    //     .title(legendTitle);
+
+    //Hover Events
+
+
     //Filter
     var filter = 'Median household income';
 
@@ -216,6 +233,13 @@ var MapChart = function() {
                     //     }))
                     //     .attr('class', 'states')
                     //     .attr('d', path);
+
+                    // svgEnter.append('g')
+                    //     .attr('class', 'legendQuant')
+                    //     .attr('transform', 'translate(' + (chartWidth - 120) + ", 20)");
+
+                    // svgEnter.select(".legeendQuant")
+                    //     .call(legend);
                 };
 
                 switch(filter) {
