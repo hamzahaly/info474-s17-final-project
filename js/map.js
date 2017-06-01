@@ -25,9 +25,6 @@ var MapChart = function() {
     //     .scale(thresholdScale)
     //     .title(legendTitle);
 
-    //Hover Events
-    
-
     //Map Chart Title
     var mapTitle;
 
@@ -302,12 +299,6 @@ var MapChart = function() {
                     //     .attr('class', 'states')
                     //     .attr('d', path);
 
-                    // svgEnter.append('g')
-                    //     .attr('class', 'legendQuant')
-                    //     .attr('transform', 'translate(' + (chartWidth - 120) + ", 20)");
-
-                    // svgEnter.select(".legeendQuant")
-                    //     .call(legend);
                 };
 
                 //Default map drawing on load.
@@ -327,7 +318,25 @@ var MapChart = function() {
 
                             //Set Color
                             color = d3.scaleThreshold().domain(d3.range(min, max, 25000)).range(d3.schemeGreens[6]);
-                            draw(fipsPop)
+                            // var thresholdScale = d3.scaleThreshold()
+                            //     .domain([min, max, 25000])
+                            //     .range(d3.schemeGreens[6]);
+
+                            // var legend = d3.legendColor()
+                            //     .labelFormat(d3.format(".0f"))
+                            //     .labels(d3.legendHelpers.thresholdLabels)
+                            //     .scale(thresholdScale)
+                            //     .title('Total Population');
+
+                            draw(fipsPop);
+
+                            // svgEnter.append('g')
+                            //     .attr('class', 'legendQuant')
+                            //     .attr('transform', 'translate(' + (chartWidth - 120) + ", 20)");
+
+                            // svgEnter.select(".legendQuant")
+                            //     .call(legend);
+
                             break;
                         case 'Median household income':
                             //Get a new min and max every time a new filter is chosen. Probably used in a click function later.
@@ -335,7 +344,25 @@ var MapChart = function() {
 
                             //Set Color
                             color = d3.scaleThreshold().domain(d3.range(min, max, 15000)).range(d3.schemeReds[6]);
-                            draw(fipsMedIncome)
+                            // var thresholdScale = d3.scaleThreshold()
+                            //     .domain([min, max, 15000])
+                            //     .range(d3.schemeReds[6]);
+
+                            // var legend = d3.legendColor()
+                            //     .labelFormat(d3.format(".0f"))
+                            //     .labels(d3.legendHelpers.thresholdLabels)
+                            //     .scale(thresholdScale)
+                            //     .title('Median Household Income');
+
+                            draw(fipsMedIncome);
+
+                            // svgEnter.append('g')
+                            //     .attr('class', 'legendQuant')
+                            //     .attr('transform', 'translate(' + (chartWidth - 120) + ", 20)");
+
+                            // svgEnter.select(".legendQuant")
+                            //     .call(legend);
+
                             break;
                         case 'Median home value':
                             //Get a new min and max every time a new filter is chosen. Probably used in a click function later.
@@ -343,7 +370,25 @@ var MapChart = function() {
 
                             //Set Color
                             color = d3.scaleThreshold().domain(d3.range(min, max, 60000)).range(d3.schemeBlues[6]);
-                            draw(fipsMedHomeVal)
+                            // var thresholdScale = d3.scaleThreshold()
+                            //     .domain([min, max, 60000])
+                            //     .range(d3.schemeBlues[6]);
+
+                            // var legend = d3.legendColor()
+                            //     .labelFormat(d3.format(".0f"))
+                            //     .labels(d3.legendHelpers.thresholdLabels)
+                            //     .scale(thresholdScale)
+                            //     .title('Median Home Value');
+
+                            draw(fipsMedHomeVal);
+
+                            // svgEnter.append('g')
+                            //     .attr('class', 'legendQuant')
+                            //     .attr('transform', 'translate(' + (chartWidth - 120) + ", 20)");
+
+                            // svgEnter.select(".legendQuant")
+                            //     .call(legend);
+
                             break;
                         case 'Zhvi':
                             //Get a new min and max every time a new filter is chosen. Probably used in a click function later.
@@ -351,9 +396,24 @@ var MapChart = function() {
 
                             //Set Color
                             color = d3.scaleThreshold().domain(d3.range(101600, 597700, 100000)).range(colorScheme);
+                            // var thresholdScale = d3.scaleThreshold()
+                            //     .domain([101600, 597700, 100000])
+                            //     .range(d3.schemeOranges[6]);
 
-                            console.log(fipsZhvi);
+                            // var legend = d3.legendColor()
+                            //     .labelFormat(d3.format(".0f"))
+                            //     .labels(d3.legendHelpers.thresholdLabels)
+                            //     .scale(thresholdScale)
+                            //     .title('ZHVI');
                             draw(fipsZhvi);
+
+                            // svgEnter.append('g')
+                            //     .attr('class', 'legendQuant')
+                            //     .attr('transform', 'translate(' + (chartWidth - 120) + ", 20)");
+
+                            // svgEnter.select(".legendQuant")
+                            //     .call(legend);
+
                             break;
                         default:
                             break;
