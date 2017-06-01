@@ -290,8 +290,8 @@ var MapChart = function() {
                 filters.forEach(function(e) {
                     e.onclick = function() {
                         filter = this.value;
-                        this.classList.remove("btn-default");
-                        this.classList.add("btn-primary");
+                        $(this).siblings().removeClass('btn-primary')
+                        $(this).addClass('btn-primary');
                         switch(filter) {
                         case 'Total population':
                             draw(fipsPop)
