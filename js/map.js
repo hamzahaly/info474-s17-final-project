@@ -62,7 +62,7 @@ var MapChart = function() {
     //Specifies the csv file to read
     var csvFile;
 
-    var colorScheme = d3.schemeGreens[6];
+    var colorScheme = d3.schemeRdBu[6];
     var colorDomain;
 
     //***************
@@ -89,6 +89,18 @@ var MapChart = function() {
             if (stateView || countyView) {
                 d3.queue()
                     .defer(d3.json, "https://d3js.org/us-10m.v1.json")
+                    .defer(d3.csv, 'data/zillow_prep.csv', function(d) {
+                        var fips = d['countyFips'];
+                        var zhviValue = d.Zhvi;
+
+                        if (fips.length == 4) {
+                            fips = "0" + fips;
+                        };
+
+                        if (fips.length == 5) {
+                            fipsZhvi.set(fips, +zhviValue);
+                        };
+                    })
                     .defer(d3.csv, csvFile, function(d) {
                         if (csvFile == 'data/zillow_prep.csv') {
                             fixFIPS('countyFips', d);
@@ -100,6 +112,18 @@ var MapChart = function() {
             } else if (washingtonView) {
                 d3.queue()
                     .defer(d3.json, "data/wa_county.json")
+                    .defer(d3.csv, 'data/zillow_prep.csv', function(d) {
+                        var fips = d['countyFips'];
+                        var zhviValue = d.Zhvi;
+
+                        if (fips.length == 4) {
+                            fips = "0" + fips;
+                        };
+
+                        if (fips.length == 5) {
+                            fipsZhvi.set(fips, +zhviValue);
+                        };
+                    })
                     .defer(d3.csv, csvFile, function(d) {
                         if (csvFile == 'data/zillow_prep.csv') {
                             fixFIPS('countyFips', d);
@@ -147,17 +171,10 @@ var MapChart = function() {
                 min = d3.min(array);
                 max = d3.max(array);
             };
-
-            //Get a new min and max every time a new filter is chosen. Probably used in a click function later.
-            getMinMax();
-
-            //Set Color
-            color = d3.scaleThreshold().domain(d3.range(min, max, 20000)).range(colorScheme);
             
             //Logic for applying the mapping of fips codes to the zhvi values
             var fixFIPS = function(fipsParam, d) {
                 var fips = d[fipsParam];
-                var zhviValue = d.Zhvi;
                 var pop = d['Total population'];
                 var county = d['County'];
                 var medianIncome = d['Median household income'];
@@ -168,7 +185,6 @@ var MapChart = function() {
                 };
 
                 if (fips.length == 5) {
-                    fipsZhvi.set(fips, +zhviValue);
                     fipsPop.set(fips, +pop);
                     fipsCounty.set(fips, county);
                     fipsMedHomeVal.set(fips, +medianHomeVal);
@@ -195,6 +211,12 @@ var MapChart = function() {
                     .append('div')
                     .attr('class', 'tooltip')
                     .style('opacity', 0);
+
+                //Get a new min and max every time a new filter is chosen. Probably used in a click function later.
+                getMinMax();
+
+                //Set Color
+                color = d3.scaleThreshold().domain(d3.range(101600, 597700, 100000)).range(colorScheme);
 
                 var draw = function(fipsMap) {
                     //If state view is true, render map with state borders, else with county borders
@@ -228,8 +250,8 @@ var MapChart = function() {
                                 div.transition()        
                                 .duration(200)      
                                 .style("opacity", .9);   
-
-                                console.log(fipsCounty.get(d.id));  
+                                console.log(fipsZhvi);
+                                console.log(fipsZhvi.get(d.id));  
 
                                 div.text(fipsCounty.get(d.id))
                                 .style("left", (d3.event.pageX) + "px")     
@@ -287,7 +309,10 @@ var MapChart = function() {
                     // svgEnter.select(".legeendQuant")
                     //     .call(legend);
                 };
-            
+
+                //Default map drawing on load.
+                draw(fipsZhvi);
+
                 // add an event listener for each filter button
                 var filters = document.querySelectorAll('.btn-filter');
                 filters.forEach(function(e) {
@@ -297,15 +322,37 @@ var MapChart = function() {
                         $(this).addClass('btn-primary');
                         switch(filter) {
                         case 'Total population':
+                            //Get a new min and max every time a new filter is chosen. Probably used in a click function later.
+                            getMinMax();
+
+                            //Set Color
+                            color = d3.scaleThreshold().domain(d3.range(min, max, 20000)).range(d3.schemeGreens[6]);
                             draw(fipsPop)
                             break;
                         case 'Median household income':
+                            //Get a new min and max every time a new filter is chosen. Probably used in a click function later.
+                            getMinMax();
+
+                            //Set Color
+                            color = d3.scaleThreshold().domain(d3.range(min, max, 20000)).range(d3.schemeReds[6]);
                             draw(fipsMedIncome)
                             break;
                         case 'Median home value':
+                            //Get a new min and max every time a new filter is chosen. Probably used in a click function later.
+                            getMinMax();
+
+                            //Set Color
+                            color = d3.scaleThreshold().domain(d3.range(min, max, 20000)).range(d3.schemeBlues[6]);
                             draw(fipsMedHomeVal)
                             break;
                         case 'Zhvi':
+                            //Get a new min and max every time a new filter is chosen. Probably used in a click function later.
+                            getMinMax();
+
+                            //Set Color
+                            color = d3.scaleThreshold().domain(d3.range(101600, 597700, 100000)).range(colorScheme);
+
+                            console.log(fipsZhvi);
                             draw(fipsZhvi);
                             break;
                         default:
