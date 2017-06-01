@@ -291,26 +291,60 @@ var MapChart = function() {
                     //     .call(legend);
                 };
 
-                switch(filter) {
-                    case 'Total population':
-                        fipsData = fipsPop;
-                        draw(fipsPop)
-                        break;
-                    case 'Median household income':
-                        fipsData = fipsMedIncome;
-                        draw(fipsMedIncome)
-                        break;
-                    case 'Median home value':
-                        fipsData = fipsMedHomeVal;
-                        draw(fipsMedHomeVal)
-                        break;
-                    case 'Zhvi':
-                        fipsData = fipsZhvi;
-                        draw(fipsZhvi);
-                        break;
-                    default:
-                        break;
-                };
+                // add an event listener for each filter button
+                var filters = document.querySelectorAll('.btn-filter');
+                filters.forEach(function(e) {
+                    e.onclick = function() {
+                        filter = this.value;
+                        $(this).siblings().removeClass('btn-primary')
+                        $(this).addClass('btn-primary');
+                        switch(filter) {
+                        case 'Total population':
+                            fipsData = fipsPop;
+                            draw(fipsPop)
+                            break;
+                        case 'Median household income':
+                            fipsData = fipsMedIncome;
+                            draw(fipsMedIncome)
+                            break;
+                        case 'Median home value':
+                            fipsData = fipsMedHomeVal;
+                            draw(fipsMedHomeVal)
+                            break;
+                        case 'Zhvi':
+                            fipsData = fipsZhvi;
+                            draw(fipsZhvi);
+                            break;
+                        default:
+                            break;
+                        };
+                    }
+                });
+
+                // document.getElementById("myList").onchange = function() {
+                //     filter = this.value;
+                //     console.log(filter);
+                //     switch(filter) {
+                //     case 'Total population':
+                //         //filter = 'Total population';
+                //         draw(fipsPop)
+                //         break;
+                //     case 'Median household income':
+                //         //filter = 'Median household income';
+                //         draw(fipsMedIncome)
+                //         break;
+                //     case 'Median home value':
+                //         //filter = 'Median home value';
+                //         draw(fipsMedHomeVal)
+                //         break;
+                //     case 'Zhvi':
+                //         draw(fipsZhvi);
+                //         break;
+                //     default:
+                //         break;
+                //     };
+                // };
+
             };
         });
     };
@@ -362,4 +396,33 @@ var MapChart = function() {
     };
 
     return chart;
+
+
+/*
+    $('li').click(function(){
+     //your code
+        console.log($(this).val());
+        filter = $(this).val();
+        getMinMax();
+            //Set Color
+        color = d3.scaleThreshold().domain(d3.range(min, max, 20000)).range(d3.schemeBlues[6])
+    });
+*/
+
+/*
+     $("li").on('change', function() {
+      // Set your measure variable to the value (which is used in the draw funciton)
+      measure = $(this).val();
+      setColorDomain(measure);
+      x.domain(colorDomain);
+      color.domain(colorDomain);
+      scaleLabel.text(measure);
+      // Draw your elements
+      d3.queue()
+        .defer(d3.json, "https://d3js.org/us-10m.v1.json")
+        .defer(d3.csv, "data/acs_data.csv", function(d) { demographics.set(d.id2, +d[measure]); })
+        .await(ready);        
+      
+         });
+         */
 };
