@@ -93,7 +93,7 @@ var MapChart = function() {
                     .await(ready);
             } else if (washingtonView) {
                 d3.queue()
-                    .defer(d3.json, "data/cb_2016_53_cousub_500k.json")
+                    .defer(d3.json, "data/wa_county.json")
                     .defer(d3.csv, csvFile, function(d) {
                         if (csvFile == 'data/zillow_prep.csv') {
                             fixFIPS('countyFips', d);
@@ -120,8 +120,6 @@ var MapChart = function() {
                 var array = [];
 
                 homeData.forEach(function(element) {
-                    console.log(element);
-                    //array.push(element);
                     switch(filter) {
                     case 'Total population':
                         array.push(+element['Total population'])
@@ -142,8 +140,6 @@ var MapChart = function() {
 
                 min = d3.min(array);
                 max = d3.max(array);
-                console.log(min)
-                console.log(max);
             };
 
             //Get a new min and max every time a new filter is chosen. Probably used in a click function later.
@@ -189,7 +185,6 @@ var MapChart = function() {
                     .attr('width', width)
                     .attr('height', height);
                 
-
                 var draw = function(fipsMap) {
                     //If state view is true, render map with state borders, else with county borders
                     //id comes from the us object
@@ -211,6 +206,7 @@ var MapChart = function() {
                             .data(topojson.feature(us, us.objects.counties).features)
                             .enter().append('path')
                             .attr('fill', function(d) {
+                                console.log(d);
                                 return color(fipsMap.get(d.id));
                             })
                             .attr('d', path);
@@ -219,10 +215,12 @@ var MapChart = function() {
                             .attr('class', 'counties')
                             .attr('transform', 'translate(475, 1080) rotate(-13)')
                             .selectAll('path')
-                            .data(topojson.feature(us, us.objects.cb_2016_53_cousub_500k).features)
+                            .data(topojson.feature(us, us.objects['WA-County']).features)
                             .enter().append('path')
                             .attr('fill', function(d) {
-                                return color(fipsMap.get(d.id));
+                                console.log(d.properties.GEOID);
+                                console.log(fipsMap.get(d.properties.GEOID));
+                                return color(fipsMap.get(d.properties.GEOID));
                             })
                             .attr('d', path);
                     };
