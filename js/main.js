@@ -35,7 +35,7 @@ $(function() {
     });
 
     // event listeners for UI components
-    $('.btn').click(function() {
+    $('.dropdown-toggle').click(function() {
         // alert('I\'m clicked!');
     });
 });
