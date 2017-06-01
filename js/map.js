@@ -284,15 +284,21 @@ var MapChart = function() {
                     // svgEnter.select(".legeendQuant")
                     //     .call(legend);
                 };
-
-                switch(filter) {
+            
+                document.getElementById("myList").onchange = function() {
+                    filter = this.value;
+                    console.log(filter);
+                    switch(filter) {
                     case 'Total population':
+                        //filter = 'Total population';
                         draw(fipsPop)
                         break;
                     case 'Median household income':
+                        //filter = 'Median household income';
                         draw(fipsMedIncome)
                         break;
                     case 'Median home value':
+                        //filter = 'Median home value';
                         draw(fipsMedHomeVal)
                         break;
                     case 'Zhvi':
@@ -300,6 +306,7 @@ var MapChart = function() {
                         break;
                     default:
                         break;
+                    };
                 };
             };
         });
@@ -352,4 +359,33 @@ var MapChart = function() {
     };
 
     return chart;
+
+
+/*
+    $('li').click(function(){
+     //your code
+        console.log($(this).val());
+        filter = $(this).val();
+        getMinMax();
+            //Set Color
+        color = d3.scaleThreshold().domain(d3.range(min, max, 20000)).range(d3.schemeBlues[6])
+    });
+*/
+
+/*
+     $("li").on('change', function() {
+      // Set your measure variable to the value (which is used in the draw funciton)
+      measure = $(this).val();
+      setColorDomain(measure);
+      x.domain(colorDomain);
+      color.domain(colorDomain);
+      scaleLabel.text(measure);
+      // Draw your elements
+      d3.queue()
+        .defer(d3.json, "https://d3js.org/us-10m.v1.json")
+        .defer(d3.csv, "data/acs_data.csv", function(d) { demographics.set(d.id2, +d[measure]); })
+        .await(ready);        
+      
+         });
+         */
 };
