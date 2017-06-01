@@ -62,7 +62,7 @@ var MapChart = function() {
     //Specifies the csv file to read
     var csvFile;
 
-    var colorScheme = d3.schemeRdBu[6];
+    var colorScheme = d3.schemeOranges[6];
     var colorDomain;
 
     //***************
@@ -326,7 +326,7 @@ var MapChart = function() {
                             getMinMax();
 
                             //Set Color
-                            color = d3.scaleThreshold().domain(d3.range(min, max, 20000)).range(d3.schemeGreens[6]);
+                            color = d3.scaleThreshold().domain(d3.range(min, max, 25000)).range(d3.schemeGreens[6]);
                             draw(fipsPop)
                             break;
                         case 'Median household income':
@@ -334,7 +334,7 @@ var MapChart = function() {
                             getMinMax();
 
                             //Set Color
-                            color = d3.scaleThreshold().domain(d3.range(min, max, 20000)).range(d3.schemeReds[6]);
+                            color = d3.scaleThreshold().domain(d3.range(min, max, 15000)).range(d3.schemeReds[6]);
                             draw(fipsMedIncome)
                             break;
                         case 'Median home value':
@@ -342,7 +342,7 @@ var MapChart = function() {
                             getMinMax();
 
                             //Set Color
-                            color = d3.scaleThreshold().domain(d3.range(min, max, 20000)).range(d3.schemeBlues[6]);
+                            color = d3.scaleThreshold().domain(d3.range(min, max, 60000)).range(d3.schemeBlues[6]);
                             draw(fipsMedHomeVal)
                             break;
                         case 'Zhvi':
