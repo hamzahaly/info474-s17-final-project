@@ -29,7 +29,10 @@ var MapChart = function() {
 
 
     //Filter
-    var filter = 'Median household income';
+    //var filter = 'Median household income';
+    //var filter = 'Total population';    
+    var filter = 'Median home value';
+
 
     //Minimum value in filtered dataset
     var min;
@@ -41,10 +44,10 @@ var MapChart = function() {
     var washingtonView = false;
 
     //Controls whether you see a state view or county view. [Default = true]
-    var stateView = true;
+    var stateView = false;
 
     //Controls wheter you see a state view or county view. [Default = false]
-    var countyView = false;
+    var countyView = true;
 
     //This refers to how the data will be mapped. For the id of each location, we will provide
     //data for that by setting and getting.
@@ -62,6 +65,8 @@ var MapChart = function() {
     //***************
     //Controls the color of the map. Need to change the scale whenever the data changes as well.
     var color = d3.scaleThreshold().domain(d3.range(101600, 597700, 100000)).range(d3.schemeRdBu[6]);
+
+
 
     var chart = function(selection) {
         var chartHeight = height - margin.top - margin.bottom;
@@ -146,7 +151,7 @@ var MapChart = function() {
             getMinMax();
 
             //Set Color
-            color = d3.scaleThreshold().domain(d3.range(min, max, 20000)).range(d3.schemeRdBu[6])
+            color = d3.scaleThreshold().domain(d3.range(min, max, 20000)).range(d3.schemeBlues[6])
             
             //Logic for applying the mapping of fips codes to the zhvi values
             var fixFIPS = function(fipsParam, d) {
@@ -173,7 +178,7 @@ var MapChart = function() {
             //Ready function after the d3.queue logic for getting us projection information
             function ready(error, us) {
                 if (error) throw error;
-                console.log(us);
+                //console.log(us);
 
                 //Svg of all of the div chart elements created in main.js
                 var svg = d3.selectAll('.chart')
@@ -206,7 +211,7 @@ var MapChart = function() {
                             .data(topojson.feature(us, us.objects.counties).features)
                             .enter().append('path')
                             .attr('fill', function(d) {
-                                console.log(d);
+                                //console.log(d);
                                 return color(fipsMap.get(d.id));
                             })
                             .attr('d', path);
@@ -218,8 +223,8 @@ var MapChart = function() {
                             .data(topojson.feature(us, us.objects['WA-County']).features)
                             .enter().append('path')
                             .attr('fill', function(d) {
-                                console.log(d.properties.GEOID);
-                                console.log(fipsMap.get(d.properties.GEOID));
+                                //console.log(d.properties.GEOID);
+                                //console.log(fipsMap.get(d.properties.GEOID));
                                 return color(fipsMap.get(d.properties.GEOID));
                             })
                             .attr('d', path);
@@ -240,22 +245,31 @@ var MapChart = function() {
                     //     .call(legend);
                 };
 
-                switch(filter) {
-                    case 'Total population':
-                        draw(fipsPop)
-                        break;
-                    case 'Median household income':
-                        draw(fipsMedIncome)
-                        break;
-                    case 'Median home value':
-                        draw(fipsMedHomeVal)
-                        break;
-                    case 'Zhvi':
-                        draw(fipsZhvi);
-                        break;
-                    default:
-                        break;
+                document.getElementById("myList").onchange = function() {
+                    filter = this.value;
+                    console.log(filter);
+                    switch(filter) {
+                        case 'Total population':
+                            //filter = 'Total population';
+                            draw(fipsPop)
+                            break;
+                        case 'Median household income':
+                            //filter = 'Median household income';
+                            draw(fipsMedIncome)
+                            break;
+                        case 'Median home value':
+                            //filter = 'Median home value';
+                            draw(fipsMedHomeVal)
+                            break;
+                        case 'Zhvi':
+                            draw(fipsZhvi);
+                            break;
+                        default:
+                            break;
+                    };
                 };
+
+
             };
         });
     };
@@ -301,4 +315,39 @@ var MapChart = function() {
     };
 
     return chart;
+
+
+
+
+/*
+
+    $('li').click(function(){
+     //your code
+        console.log($(this).val());
+        filter = $(this).val();
+        getMinMax();
+
+            //Set Color
+        color = d3.scaleThreshold().domain(d3.range(min, max, 20000)).range(d3.schemeBlues[6])
+    });
+*/
+
+/*
+     $("li").on('change', function() {
+      // Set your measure variable to the value (which is used in the draw funciton)
+      measure = $(this).val();
+      setColorDomain(measure);
+      x.domain(colorDomain);
+      color.domain(colorDomain);
+      scaleLabel.text(measure);
+
+
+      // Draw your elements
+      d3.queue()
+        .defer(d3.json, "https://d3js.org/us-10m.v1.json")
+        .defer(d3.csv, "data/acs_data.csv", function(d) { demographics.set(d.id2, +d[measure]); })
+        .await(ready);        
+      
+         });
+         */
 };
