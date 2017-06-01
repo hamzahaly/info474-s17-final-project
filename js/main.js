@@ -37,11 +37,13 @@ $(function() {
             var val = $(this).text();
             console.log(val);
 
-            var charts = d3.select('#viz').selectAll('.chart')
-                .data([data]);
-
             if (val == 'United States') {
                 nationView = true;
+
+                d3.selectAll(".chart").remove();
+
+                charts = d3.select('#viz').selectAll('.chart')
+                .data([data]);
 
                 if (nationView) {
                     map.countyView(true);
@@ -58,10 +60,11 @@ $(function() {
                 charts.exit().remove();
 
             } else if (val == 'Washington') {
-                console.log("WASHINGTON CHOSEN");
                 nationView = false;
-                
-                var charts = d3.select('#viz').selectAll('.chart')
+
+                d3.selectAll(".chart").remove();
+
+                charts = d3.select('#viz').selectAll('.chart')
                     .data([data]);
 
                 if (nationView) {
