@@ -319,7 +319,7 @@ var MapChart = function() {
                             //Set Color
                             color = d3.scaleThreshold().domain(d3.range(min, max, 25000)).range(d3.schemeGreens[6]);
                             // var thresholdScale = d3.scaleThreshold()
-                            //     .domain([min, max, 25000])
+                            //     .domain([min, min + 25000, min + (25000 * 2), min + (25000 * 3), max])
                             //     .range(d3.schemeGreens[6]);
 
                             // var legend = d3.legendColor()
@@ -332,7 +332,7 @@ var MapChart = function() {
 
                             // svgEnter.append('g')
                             //     .attr('class', 'legendQuant')
-                            //     .attr('transform', 'translate(' + (chartWidth - 120) + ", 20)");
+                            //     .attr('transform', 'translate(' + (chartWidth - 200) + ", 20)");
 
                             // svgEnter.select(".legendQuant")
                             //     .call(legend);
