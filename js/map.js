@@ -62,9 +62,12 @@ var MapChart = function() {
     //Specifies the csv file to read
     var csvFile;
 
+    var colorScheme = d3.schemeGreens[6];
+    var colorDomain;
+
     //***************
     //Controls the color of the map. Need to change the scale whenever the data changes as well.
-    var color = d3.scaleThreshold().domain(d3.range(101600, 597700, 100000)).range(d3.schemeRdBu[6]);
+    var color = d3.scaleThreshold().domain(d3.range(101600, 597700, 100000)).range(colorScheme);
 
     var chart = function(selection) {
         var chartHeight = height - margin.top - margin.bottom;
@@ -149,7 +152,7 @@ var MapChart = function() {
             getMinMax();
 
             //Set Color
-            color = d3.scaleThreshold().domain(d3.range(min, max, 20000)).range(d3.schemeRdBu[6])
+            color = d3.scaleThreshold().domain(d3.range(min, max, 20000)).range(colorScheme);
             
             //Logic for applying the mapping of fips codes to the zhvi values
             var fixFIPS = function(fipsParam, d) {
@@ -355,6 +358,12 @@ var MapChart = function() {
     chart.mapTitle = function(value) {
         if (!arguments.length) return mapTitle;
         mapTitle = value;
+        return chart;
+    };
+
+    chart.colorScheme = function(value) {
+        if(!arguments.length) return colorScheme;
+        colorScheme = value;
         return chart;
     };
 
