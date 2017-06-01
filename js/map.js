@@ -285,29 +285,55 @@ var MapChart = function() {
                     //     .call(legend);
                 };
             
-                document.getElementById("myList").onchange = function() {
-                    filter = this.value;
-                    console.log(filter);
-                    switch(filter) {
-                    case 'Total population':
-                        //filter = 'Total population';
-                        draw(fipsPop)
-                        break;
-                    case 'Median household income':
-                        //filter = 'Median household income';
-                        draw(fipsMedIncome)
-                        break;
-                    case 'Median home value':
-                        //filter = 'Median home value';
-                        draw(fipsMedHomeVal)
-                        break;
-                    case 'Zhvi':
-                        draw(fipsZhvi);
-                        break;
-                    default:
-                        break;
-                    };
-                };
+                // add an event listener for each filter button
+                var filters = document.querySelectorAll('.btn-filter');
+                filters.forEach(function(e) {
+                    e.onclick = function() {
+                        filter = this.value;
+                        this.classList.remove("btn-default");
+                        this.classList.add("btn-primary");
+                        switch(filter) {
+                        case 'Total population':
+                            draw(fipsPop)
+                            break;
+                        case 'Median household income':
+                            draw(fipsMedIncome)
+                            break;
+                        case 'Median home value':
+                            draw(fipsMedHomeVal)
+                            break;
+                        case 'Zhvi':
+                            draw(fipsZhvi);
+                            break;
+                        default:
+                            break;
+                        };
+                    }
+                });
+
+                // document.getElementById("myList").onchange = function() {
+                //     filter = this.value;
+                //     console.log(filter);
+                //     switch(filter) {
+                //     case 'Total population':
+                //         //filter = 'Total population';
+                //         draw(fipsPop)
+                //         break;
+                //     case 'Median household income':
+                //         //filter = 'Median household income';
+                //         draw(fipsMedIncome)
+                //         break;
+                //     case 'Median home value':
+                //         //filter = 'Median home value';
+                //         draw(fipsMedHomeVal)
+                //         break;
+                //     case 'Zhvi':
+                //         draw(fipsZhvi);
+                //         break;
+                //     default:
+                //         break;
+                //     };
+                // };
             };
         });
     };
