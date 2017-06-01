@@ -298,6 +298,7 @@ var MapChart = function() {
                     // svgEnter.select(".legeendQuant")
                     //     .call(legend);
                 };
+<<<<<<< HEAD
 
                 document.getElementById("myList").onchange = function() {
                     filter = this.value;
@@ -313,6 +314,24 @@ var MapChart = function() {
                             break;
                         case 'Median home value':
                             //filter = 'Median home value';
+=======
+            
+                // add an event listener for each filter button
+                var filters = document.querySelectorAll('.btn-filter');
+                filters.forEach(function(e) {
+                    e.onclick = function() {
+                        filter = this.value;
+                        $(this).siblings().removeClass('btn-primary')
+                        $(this).addClass('btn-primary');
+                        switch(filter) {
+                        case 'Total population':
+                            draw(fipsPop)
+                            break;
+                        case 'Median household income':
+                            draw(fipsMedIncome)
+                            break;
+                        case 'Median home value':
+>>>>>>> 8fba2de7de5b64849bb188a59a1612255e73f887
                             draw(fipsMedHomeVal)
                             break;
                         case 'Zhvi':
@@ -320,10 +339,40 @@ var MapChart = function() {
                             break;
                         default:
                             break;
+<<<<<<< HEAD
                     };
                 };
 
 
+=======
+                        };
+                    }
+                });
+
+                // document.getElementById("myList").onchange = function() {
+                //     filter = this.value;
+                //     console.log(filter);
+                //     switch(filter) {
+                //     case 'Total population':
+                //         //filter = 'Total population';
+                //         draw(fipsPop)
+                //         break;
+                //     case 'Median household income':
+                //         //filter = 'Median household income';
+                //         draw(fipsMedIncome)
+                //         break;
+                //     case 'Median home value':
+                //         //filter = 'Median home value';
+                //         draw(fipsMedHomeVal)
+                //         break;
+                //     case 'Zhvi':
+                //         draw(fipsZhvi);
+                //         break;
+                //     default:
+                //         break;
+                //     };
+                // };
+>>>>>>> 8fba2de7de5b64849bb188a59a1612255e73f887
             };
         });
     };
@@ -377,16 +426,23 @@ var MapChart = function() {
     return chart;
 
 
+<<<<<<< HEAD
 
 
 /*
 
+=======
+/*
+>>>>>>> 8fba2de7de5b64849bb188a59a1612255e73f887
     $('li').click(function(){
      //your code
         console.log($(this).val());
         filter = $(this).val();
         getMinMax();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8fba2de7de5b64849bb188a59a1612255e73f887
             //Set Color
         color = d3.scaleThreshold().domain(d3.range(min, max, 20000)).range(d3.schemeBlues[6])
     });
@@ -400,8 +456,11 @@ var MapChart = function() {
       x.domain(colorDomain);
       color.domain(colorDomain);
       scaleLabel.text(measure);
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 8fba2de7de5b64849bb188a59a1612255e73f887
       // Draw your elements
       d3.queue()
         .defer(d3.json, "https://d3js.org/us-10m.v1.json")

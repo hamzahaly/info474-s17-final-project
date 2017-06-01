@@ -36,6 +36,10 @@ $(function() {
 
     // event listeners for UI components
     $('.btn').click(function() {
+<<<<<<< HEAD
         //alert('I\'m clicked!');
+=======
+        // alert('I\'m clicked!');
+>>>>>>> 8fba2de7de5b64849bb188a59a1612255e73f887
     });
 });
