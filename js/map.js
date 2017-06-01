@@ -58,6 +58,7 @@ var MapChart = function() {
     var fipsCounty = d3.map();
 
     var fipsMap;
+    var fipsData = fipsMedIncome;
 
     //Specifies the csv file to read
     var csvFile;
@@ -108,6 +109,7 @@ var MapChart = function() {
             };
 
             var homeData = data;
+            //console.log(homeData);
             // var filterData = function() {
             //     var filteredData = homeData.filter(function(d) {
 
@@ -159,6 +161,8 @@ var MapChart = function() {
                 var county = d['County'];
                 var medianIncome = d['Median household income'];
                 var medianHomeVal = d['Median home value'];
+                //console.log(d);
+                //console.log("hello");
 
                 if (fips.length == 4) {
                     fips = "0" + fips;
@@ -226,9 +230,10 @@ var MapChart = function() {
                                 .duration(200)      
                                 .style("opacity", .9);   
 
-                                console.log(fipsCounty.get(d.id));  
+                                //console.log(fipsCounty.get(d.id)); 
+                                //console.log(fipsPop); 
 
-                                div.text(fipsCounty.get(d.id))
+                                div.text(fipsCounty.get(d.id) + ": " + fipsData.get(d.id))
                                 .style("left", (d3.event.pageX) + "px")     
                                 .style("top", (d3.event.pageY - 28) + "px");    
                             })
@@ -258,6 +263,7 @@ var MapChart = function() {
                                 .style("opacity", .9);   
                                  
                                 console.log(d);  
+                                console.log("hello");
 
                                 div.text(d.properties.NAME)
                                 .style("left", (d3.event.pageX) + "px")     
@@ -287,15 +293,19 @@ var MapChart = function() {
 
                 switch(filter) {
                     case 'Total population':
+                        fipsData = fipsPop;
                         draw(fipsPop)
                         break;
                     case 'Median household income':
+                        fipsData = fipsMedIncome;
                         draw(fipsMedIncome)
                         break;
                     case 'Median home value':
+                        fipsData = fipsMedHomeVal;
                         draw(fipsMedHomeVal)
                         break;
                     case 'Zhvi':
+                        fipsData = fipsZhvi;
                         draw(fipsZhvi);
                         break;
                     default:
