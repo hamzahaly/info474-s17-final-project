@@ -96,6 +96,14 @@ sub {
 	opacity: 0.75;
 }
 
+.dropdown-menu li {
+	padding-left: 8px;
+}
+
+.dropdown-menu li:hover {
+	background-color: #f5f5f5;
+}
+
 .states :hover {
 	opacity: 0.75;
 }
