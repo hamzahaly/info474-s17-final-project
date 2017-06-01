@@ -53,7 +53,6 @@ h5 {
 	line-height: 1.5em;
 	margin-top: 1.5em;
 	margin-bottom: 0em;
-	text-transform: uppercase;
 }
 
 p, ul, ol, pre, table, blockquote {
@@ -87,6 +86,10 @@ sup {
 
 sub {
 	bottom: -0.25em;
+}
+
+.btn {
+	margin: 8px 8px 8px 0;
 }
 
 .counties :hover {
