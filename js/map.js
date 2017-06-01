@@ -26,7 +26,10 @@ var MapChart = function() {
     //    .title(legendTitle);
 
     //Hover Events
+    
 
+    //Map Chart Title
+    var mapTitle;
 
     //Filter
     var filter = 'Median household income';
@@ -185,6 +188,11 @@ var MapChart = function() {
                     .attr('width', width)
                     .attr('height', height);
                 
+                var div = d3.select('body')
+                    .append('div')
+                    .attr('class', 'tooltip')
+                    .style('opacity', 0);
+
                 var draw = function(fipsMap) {
                     //If state view is true, render map with state borders, else with county borders
                     //id comes from the us object
@@ -206,10 +214,29 @@ var MapChart = function() {
                             .data(topojson.feature(us, us.objects.counties).features)
                             .enter().append('path')
                             .attr('fill', function(d) {
-                                console.log(d);
                                 return color(fipsMap.get(d.id));
                             })
-                            .attr('d', path);
+                            .attr('d', path)
+                            // Modification of custom tooltip code provided by Malcolm Maclean, taken from Michelle Chandra's
+                            //Basic US State Map - D3, 
+                            //"D3 Tips and Tricks" 
+                            // http://www.d3noob.org/2013/01/adding-tooltips-to-d3js-graph.html
+                            .on("mouseover", function(d) {      
+                                div.transition()        
+                                .duration(200)      
+                                .style("opacity", .9);   
+
+                                console.log(fipsCounty.get(d.id));  
+
+                                div.text(fipsCounty.get(d.id))
+                                .style("left", (d3.event.pageX) + "px")     
+                                .style("top", (d3.event.pageY - 28) + "px");    
+                            })
+                            .on("mouseout", function(d) {       
+                                div.transition()        
+                                .duration(500)      
+                                .style("opacity", 0);   
+                            });
                     } else if (washingtonView) {
                         svgEnter.append('g')
                             .attr('class', 'counties')
@@ -218,11 +245,29 @@ var MapChart = function() {
                             .data(topojson.feature(us, us.objects['WA-County']).features)
                             .enter().append('path')
                             .attr('fill', function(d) {
-                                console.log(d.properties.GEOID);
-                                console.log(fipsMap.get(d.properties.GEOID));
                                 return color(fipsMap.get(d.properties.GEOID));
                             })
-                            .attr('d', path);
+                            .attr('d', path)
+                            // Modification of custom tooltip code provided by Malcolm Maclean, taken from Michelle Chandra's
+                            //Basic US State Map - D3, 
+                            //"D3 Tips and Tricks" 
+                            // http://www.d3noob.org/2013/01/adding-tooltips-to-d3js-graph.html
+                            .on("mouseover", function(d) {      
+                                div.transition()        
+                                .duration(200)      
+                                .style("opacity", .9);   
+                                 
+                                console.log(d);  
+
+                                div.text(d.properties.NAME)
+                                .style("left", (d3.event.pageX) + "px")     
+                                .style("top", (d3.event.pageY - 28) + "px");    
+                            })
+                            .on("mouseout", function(d) {       
+                                div.transition()        
+                                .duration(500)      
+                                .style("opacity", 0);   
+                            });
                     };
                     
                     // svgEnter.append('path')
@@ -297,6 +342,12 @@ var MapChart = function() {
         if (!arguments.length) return washingtonView;
         washingtonView = value;
         stateView = false;
+        return chart;
+    };
+
+    chart.mapTitle = function(value) {
+        if (!arguments.length) return mapTitle;
+        mapTitle = value;
         return chart;
     };
 

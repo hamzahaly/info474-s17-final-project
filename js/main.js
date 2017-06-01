@@ -11,7 +11,7 @@ $(function() {
         var homeValue = d3.map();
         
         var map = MapChart().width(960).height(600);
-        var nationView = false;
+        var nationView = true;
         //CSV file needs to change if you want ZHVI values or any other data value
 
         map.csvFile(csvFile);
