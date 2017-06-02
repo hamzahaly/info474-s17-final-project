@@ -15,21 +15,14 @@ var MapChart = function() {
     //************** Needs to find a way to determine domain based on data */
     var legendTitle;
 
-    // var thresholdScale = d3.scaleThreshold()
-    //     .domain()
-    //     .range(d3.schemeRdBu[6])
-
-    // var legend = d3.legendColor()
-    //     .labelFormat(d3.format(".0f"))
-    //     .labels(d3.legendHelpers.thresholdLabels)
-    //     .scale(thresholdScale)
-    //     .title(legendTitle);
+    var legend;
+    var thresholdScale;
 
     //Map Chart Title
-    var mapTitle;
+    var mapTitle = 'Zillow Home Value Index';
 
     //Filter
-    var filter = 'Median household income';
+    var filter = 'ZHVI';
 
     //Minimum value in filtered dataset
     var min;
@@ -41,7 +34,7 @@ var MapChart = function() {
     var washingtonView = false;
 
     //Controls whether you see a state view or county view. [Default = true]
-    var stateView = true;
+    //var stateView = true;
 
     //Controls wheter you see a state view or county view. [Default = false]
     var countyView = false;
@@ -69,13 +62,12 @@ var MapChart = function() {
     var chart = function(selection) {
         var chartHeight = height - margin.top - margin.bottom;
         var chartWidth = width - margin.left - margin.right;
-        
 
         var projection = d3.geoAlbersUsa().scale(7800).translate([2300, 680]);
         var path = d3.geoPath().projection(projection);
 
         //Only allow a projection for the Washington view or else you get a box for the U.S. nation choropleth.
-        if (stateView || countyView) {
+        if (countyView) {
             path = d3.geoPath();
         } else if (washingtonView) {
             path = d3.geoPath().projection(projection);
@@ -83,63 +75,24 @@ var MapChart = function() {
 
         selection.each(function(data) {
             //Need to use if statement to decide which json file to defer
-            if (stateView || countyView) {
+            if (countyView) {
                 d3.queue()
                     .defer(d3.json, "https://d3js.org/us-10m.v1.json")
-                    .defer(d3.csv, 'data/zillow_prep.csv', function(d) {
-                        var fips = d['countyFips'];
-                        var zhviValue = d.Zhvi;
-
-                        if (fips.length == 4) {
-                            fips = "0" + fips;
-                        };
-
-                        if (fips.length == 5) {
-                            fipsZhvi.set(fips, +zhviValue);
-                        };
-                    })
                     .defer(d3.csv, csvFile, function(d) {
-                        if (csvFile == 'data/zillow_prep.csv') {
-                            fixFIPS('countyFips', d);
-                        } else {
-                            fixFIPS('FIPS', d);
-                        };
+                        fixFIPS(d);
                     })
                     .await(ready);
             } else if (washingtonView) {
                 d3.queue()
                     .defer(d3.json, "data/wa_county.json")
-                    .defer(d3.csv, 'data/zillow_prep.csv', function(d) {
-                        var fips = d['countyFips'];
-                        var zhviValue = d.Zhvi;
-
-                        if (fips.length == 4) {
-                            fips = "0" + fips;
-                        };
-
-                        if (fips.length == 5) {
-                            fipsZhvi.set(fips, +zhviValue);
-                        };
-                    })
                     .defer(d3.csv, csvFile, function(d) {
-                        if (csvFile == 'data/zillow_prep.csv') {
-                            fixFIPS('countyFips', d);
-                        } else {
-                            fixFIPS('FIPS', d);
-                        };
+                        fixFIPS(d);
                     })
                     .await(ready);
             };
 
             var homeData = data;
-            // var filterData = function() {
-            //     var filteredData = homeData.filter(function(d) {
-
-            //     });
-            //     return filterData;
-            // };
-
-            // filterData();
+            console.log(homeData);
 
             //Logic for getting min and max from dataset that contains comparable values
 
@@ -157,8 +110,8 @@ var MapChart = function() {
                     case 'Median home value':
                         array.push(+element['Median home value'])
                         break;
-                    case 'Zhvi':
-                        array.push(+element.Zhvi)
+                    case 'ZHVI':
+                        array.push(+element.ZHVI)
                         break;
                     default:
                         break;
@@ -170,18 +123,20 @@ var MapChart = function() {
             };
             
             //Logic for applying the mapping of fips codes to the zhvi values
-            var fixFIPS = function(fipsParam, d) {
-                var fips = d[fipsParam];
+            var fixFIPS = function(d) {
+                var fips = d['FIPS'];
                 var pop = d['Total population'];
                 var county = d['County'];
                 var medianIncome = d['Median household income'];
                 var medianHomeVal = d['Median home value'];
+                var zhviValue = d['ZHVI'];
 
                 if (fips.length == 4) {
                     fips = "0" + fips;
                 };
 
                 if (fips.length == 5) {
+                    fipsZhvi.set(fips, +zhviValue);
                     fipsPop.set(fips, +pop);
                     fipsCounty.set(fips, county);
                     fipsMedHomeVal.set(fips, +medianHomeVal);
@@ -202,8 +157,8 @@ var MapChart = function() {
                 var svgEnter = svg
                     .append('svg')
                     .attr('width', width)
-                    .attr('height', height);
-                
+                    .attr('height', height)
+
                 var div = d3.select('body')
                     .append('div')
                     .attr('class', 'tooltip')
@@ -246,9 +201,7 @@ var MapChart = function() {
                             .on("mouseover", function(d) {      
                                 div.transition()        
                                 .duration(200)      
-                                .style("opacity", .9);   
-                                console.log(fipsZhvi);
-                                console.log(fipsZhvi.get(d.id));  
+                                .style("opacity", .9);     
 
                                 div.text(fipsCounty.get(d.id))
                                 .style("left", (d3.event.pageX) + "px")     
@@ -280,8 +233,9 @@ var MapChart = function() {
                                 .style("opacity", .9);   
                                  
                                 console.log(d);  
-
-                                div.text(d.properties.NAME)
+                                console.log(fipsMap.get(d.properties.GEOID));
+                                //Hovers don't work quite right
+                                div.text(d.properties.NAME + " " + filter + ": " + fipsMap.get(d.properties.GEOID))
                                 .style("left", (d3.event.pageX) + "px")     
                                 .style("top", (d3.event.pageY - 28) + "px");    
                             })
@@ -289,7 +243,7 @@ var MapChart = function() {
                                 div.transition()        
                                 .duration(500)      
                                 .style("opacity", 0);   
-                            });
+                            })
                     };
                     
                     // svgEnter.append('path')
@@ -301,35 +255,62 @@ var MapChart = function() {
 
                 };
 
+                //Default Legend
+                thresholdScale = d3.scaleThreshold()
+                                .domain([min, min + 100000, min + (100000 * 2), min + (100000 * 3), 540000])
+                                .range(d3.schemeOranges[6]);
+
+                legend = d3.legendColor()
+                    .labelFormat(d3.format(".0f"))
+                    .labels(d3.legendHelpers.thresholdLabels)
+                    .scale(thresholdScale)
+                    .title('Zillow Home Value Index');
+
+                svgEnter.append('g')
+                    .attr('class', 'legendQuant')
+                    .attr('transform', 'translate(' + (chartWidth - 160) + ", 20)");
+
+                svgEnter.select(".legendQuant")
+                    .call(legend);
+
+                svgEnter.append('g').append('text')
+                    .attr('class', 'title')
+                    .attr('x', chartWidth / 2)
+                    .attr('y', 0 - (margin.top / 2) + 40)
+                    .attr('text-anchor', 'middle')
+                    .text(mapTitle);
+
                 //Default map drawing on load.
                 draw(fipsZhvi);
 
                 // add an event listener for each filter button
                 var filters = document.querySelectorAll('.btn-filter');
+
                 filters.forEach(function(e) {
                     e.onclick = function() {
                         filter = this.value;
                         $(this).siblings().removeClass('btn-primary')
                         $(this).addClass('btn-primary');
-
                         switch(filter) {
                         case 'Total population':
+                            mapTitle = "Total Population"
                             //Get a new min and max every time a new filter is chosen. Probably used in a click function later.
                             getMinMax();
 
                             //Set Color
                             color = d3.scaleThreshold().domain(d3.range(min, max, 25000)).range(d3.schemeGreens[6]);
-                            
-                            var thresholdScale = d3.scaleThreshold()
+                            thresholdScale = d3.scaleThreshold()
                                 .domain([min, min + 25000, min + (25000 * 2), min + (25000 * 3), max])
                                 .range(d3.schemeGreens[6]);
 
-                            var legend = d3.legendColor()
+                            legend = d3.legendColor()
                                 .labelFormat(d3.format(".0f"))
                                 .labels(d3.legendHelpers.thresholdLabels)
                                 .scale(thresholdScale)
                                 .title('Total Population');
-
+                            
+                            svgEnter.select(".legendQuant").remove();
+                            svgEnter.select('.title').remove();
 
                             draw(fipsPop);
 
@@ -340,50 +321,75 @@ var MapChart = function() {
                             svgEnter.select(".legendQuant")
                                 .call(legend);
 
+                            svgEnter.append('g').append('text')
+                                .attr('class', 'title')
+                                .attr('x', chartWidth / 2)
+                                .attr('y', 0 - (margin.top / 2) + 40)
+                                .attr('text-anchor', 'middle')
+                                .text(mapTitle);
+
                             break;
                         case 'Median household income':
+                            mapTitle = "Median Household Income";
+
                             //Get a new min and max every time a new filter is chosen. Probably used in a click function later.
                             getMinMax();
 
                             //Set Color
                             color = d3.scaleThreshold().domain(d3.range(min, max, 15000)).range(d3.schemeReds[6]);
-                            var thresholdScale = d3.scaleThreshold()
-                                .domain([min, max, 15000])
+                            thresholdScale = d3.scaleThreshold()
+                                .domain([min, min + 15000, min + (15000 * 2), min + (15000 * 3), max])
                                 .range(d3.schemeReds[6]);
 
-                            var legend = d3.legendColor()
+                            legend = d3.legendColor()
                                 .labelFormat(d3.format(".0f"))
                                 .labels(d3.legendHelpers.thresholdLabels)
-                                .scale(color)
+                                .scale(thresholdScale)
                                 .title('Median Household Income');
+
+                            svgEnter.select(".legendQuant").remove();
+                            svgEnter.select('.title').remove();
 
                             draw(fipsMedIncome);
 
+
                             svgEnter.append('g')
                                 .attr('class', 'legendQuant')
-                                .attr('transform', 'translate(' + (chartWidth - 120) + ", 20)");
+                                .attr('transform', 'translate(' + (chartWidth - 160) + ", 20)");
 
                             svgEnter.select(".legendQuant")
                                 .call(legend);
 
+                            svgEnter.append('g').append('text')
+                                .attr('class', 'title')
+                                .attr('x', chartWidth / 2)
+                                .attr('y', 0 - (margin.top / 2) + 40)
+                                .attr('text-anchor', 'middle')
+                                .text(mapTitle);
+
                             break;
                         case 'Median home value':
+                            mapTitle = "Median Home Value";
                             //Get a new min and max every time a new filter is chosen. Probably used in a click function later.
                             getMinMax();
 
                             //Set Color
                             color = d3.scaleThreshold().domain(d3.range(min, max, 60000)).range(d3.schemeBlues[6]);
-                            var thresholdScale = d3.scaleThreshold()
-                                .domain([min, max, 60000])
+                            thresholdScale = d3.scaleThreshold()
+                                .domain([min, min + 60000, min + (60000 * 2), min + (60000 * 3), max])
                                 .range(d3.schemeBlues[6]);
 
-                            var legend = d3.legendColor()
+                            legend = d3.legendColor()
                                 .labelFormat(d3.format(".0f"))
                                 .labels(d3.legendHelpers.thresholdLabels)
                                 .scale(thresholdScale)
                                 .title('Median Home Value');
 
+                            svgEnter.select(".legendQuant").remove();
+                            svgEnter.select('.title').remove();
+
                             draw(fipsMedHomeVal);
+
 
                             svgEnter.append('g')
                                 .attr('class', 'legendQuant')
@@ -392,22 +398,34 @@ var MapChart = function() {
                             svgEnter.select(".legendQuant")
                                 .call(legend);
 
+                            svgEnter.append('g').append('text')
+                                .attr('class', 'title')
+                                .attr('x', chartWidth / 2)
+                                .attr('y', 0 - (margin.top / 2) + 40)
+                                .attr('text-anchor', 'middle')
+                                .text(mapTitle);
+
                             break;
-                        case 'Zhvi':
+                        case 'ZHVI':
+                            mapTitle = "Zillow Home Value Index"
                             //Get a new min and max every time a new filter is chosen. Probably used in a click function later.
                             getMinMax();
 
                             //Set Color
                             color = d3.scaleThreshold().domain(d3.range(101600, 597700, 100000)).range(colorScheme);
-                            var thresholdScale = d3.scaleThreshold()
-                                .domain([101600, 597700, 100000])
+                            thresholdScale = d3.scaleThreshold()
+                                .domain([min, min + 100000, min + (100000 * 2), min + (100000 * 3), 540000])
                                 .range(d3.schemeOranges[6]);
 
-                            var legend = d3.legendColor()
+                            legend = d3.legendColor()
                                 .labelFormat(d3.format(".0f"))
                                 .labels(d3.legendHelpers.thresholdLabels)
                                 .scale(thresholdScale)
-                                .title('ZHVI');
+                                .title('Zillow Home Value Index');
+
+                            svgEnter.select(".legendQuant").remove();
+                            svgEnter.select('.title').remove();
+
                             draw(fipsZhvi);
 
                             svgEnter.append('g')
@@ -416,6 +434,13 @@ var MapChart = function() {
 
                             svgEnter.select(".legendQuant")
                                 .call(legend);
+
+                            svgEnter.append('g').append('text')
+                                .attr('class', 'title')
+                                .attr('x', chartWidth / 2)
+                                .attr('y', 0 - (margin.top / 2) + 40)
+                                .attr('text-anchor', 'middle')
+                                .text(mapTitle);
 
                             break;
                         default:
@@ -440,17 +465,17 @@ var MapChart = function() {
         return chart;
     };
 
-    chart.stateView = function(value) {
-        if (!arguments.length) return stateView;
-        stateView = value;
-        countyView = false;
-        return chart;
-    };
+    // chart.stateView = function(value) {
+    //     if (!arguments.length) return stateView;
+    //     stateView = value;
+    //     countyView = false;
+    //     return chart;
+    // };
 
     chart.countyView = function(value) {
         if (!arguments.length) return countyView;
         countyView = value;
-        stateView = false;
+        //stateView = false;
         return chart;
     };
 
@@ -480,33 +505,4 @@ var MapChart = function() {
     };
 
     return chart;
-
-
-/*
-    $('li').click(function(){
-     //your code
-        console.log($(this).val());
-        filter = $(this).val();
-        getMinMax();
-            //Set Color
-        color = d3.scaleThreshold().domain(d3.range(min, max, 20000)).range(d3.schemeBlues[6])
-    });
-*/
-
-/*
-     $("li").on('change', function() {
-      // Set your measure variable to the value (which is used in the draw funciton)
-      measure = $(this).val();
-      setColorDomain(measure);
-      x.domain(colorDomain);
-      color.domain(colorDomain);
-      scaleLabel.text(measure);
-      // Draw your elements
-      d3.queue()
-        .defer(d3.json, "https://d3js.org/us-10m.v1.json")
-        .defer(d3.csv, "data/acs_data.csv", function(d) { demographics.set(d.id2, +d[measure]); })
-        .await(ready);        
-      
-         });
-         */
 };

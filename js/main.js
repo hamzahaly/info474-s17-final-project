@@ -4,7 +4,7 @@ $(function() {
     //Use bracket notation for 1 map
     //Use data for multiple maps
     
-    var csvFile = "data/census_prep_data.csv";
+    var csvFile = "data/census_prep_data_final2.csv";
 
     var map = MapChart().width(960).height(600);
 
@@ -22,7 +22,6 @@ $(function() {
             map.washingtonView(true);
         };
 
-
         var charts = d3.select('#viz').selectAll('.chart')
             .data([data]);
 
@@ -37,15 +36,19 @@ $(function() {
             var val = $(this).text();
             console.log(val);
 
-            var charts = d3.select('#viz').selectAll('.chart')
-                .data([data]);
-
             if (val == 'United States') {
                 nationView = true;
 
+                d3.selectAll(".chart").remove();
+
+                charts = d3.select('#viz').selectAll('.chart')
+                .data([data]);
+
                 if (nationView) {
+                    map.washingtonView(false);
                     map.countyView(true);
                 } else {
+                    map.countyView(false);
                     map.washingtonView(true);
                 };
 
@@ -58,15 +61,18 @@ $(function() {
                 charts.exit().remove();
 
             } else if (val == 'Washington') {
-                console.log("WASHINGTON CHOSEN");
                 nationView = false;
-                
-                var charts = d3.select('#viz').selectAll('.chart')
+
+                d3.selectAll(".chart").remove();
+
+                charts = d3.select('#viz').selectAll('.chart')
                     .data([data]);
 
                 if (nationView) {
+                    map.washingtonView(false);
                     map.countyView(true);
                 } else {
+                    map.countyView(false);
                     map.washingtonView(true);
                 };
 
@@ -79,11 +85,4 @@ $(function() {
             };
         });
     });
-
-    // event listeners for UI components
-    $('.dropdown-toggle').click(function() {
-        // alert('I\'m clicked!');
-
-    });
-
 });
