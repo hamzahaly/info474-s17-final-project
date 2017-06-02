@@ -34,7 +34,8 @@ $(function() {
 
         $('#map-display li').on('click', function() {
             var val = $(this).text();
-            console.log(val);
+            $('.btn-filter').removeClass('btn-primary');
+            $('.btn-filter').removeClass('active');
 
             if (val == 'United States') {
                 nationView = true;

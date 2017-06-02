@@ -282,6 +282,8 @@ var MapChart = function() {
 
                 //Default map drawing on load.
                 draw(fipsZhvi);
+                $('#zhvi').addClass('btn-primary');
+                $('#zhvi').addClass('active');
 
                 // add an event listener for each filter button
                 var filters = document.querySelectorAll('.btn-filter');
@@ -289,8 +291,10 @@ var MapChart = function() {
                 filters.forEach(function(e) {
                     e.onclick = function() {
                         filter = this.value;
-                        $(this).siblings().removeClass('btn-primary')
+                        $(this).siblings().removeClass('btn-primary');
+                        $(this).siblings().removeClass('active');
                         $(this).addClass('btn-primary');
+                        $(this).addClass('active');
                         switch(filter) {
                         case 'Total population':
                             mapTitle = "Total Population"
