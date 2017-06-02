@@ -4,7 +4,7 @@ $(function() {
     //Use bracket notation for 1 map
     //Use data for multiple maps
     
-    var csvFile = "data/census_prep_data.csv";
+    var csvFile = "data/census_prep_data_final2.csv";
 
     var map = MapChart().width(960).height(600);
 
@@ -21,7 +21,6 @@ $(function() {
         } else {
             map.washingtonView(true);
         };
-
 
         var charts = d3.select('#viz').selectAll('.chart')
             .data([data]);
@@ -46,8 +45,10 @@ $(function() {
                 .data([data]);
 
                 if (nationView) {
+                    map.washingtonView(false);
                     map.countyView(true);
                 } else {
+                    map.countyView(false);
                     map.washingtonView(true);
                 };
 
@@ -68,8 +69,10 @@ $(function() {
                     .data([data]);
 
                 if (nationView) {
+                    map.washingtonView(false);
                     map.countyView(true);
                 } else {
+                    map.countyView(false);
                     map.washingtonView(true);
                 };
 
