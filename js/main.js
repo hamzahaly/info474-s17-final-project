@@ -22,7 +22,6 @@ $(function() {
             map.washingtonView(true);
         };
 
-
         var charts = d3.select('#viz').selectAll('.chart')
             .data([data]);
 

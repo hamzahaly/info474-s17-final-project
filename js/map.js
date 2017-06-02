@@ -19,7 +19,7 @@ var MapChart = function() {
     var thresholdScale;
 
     //Map Chart Title
-    var mapTitle;
+    var mapTitle = 'Zillow Home Value Index';
 
     //Filter
     var filter = 'ZHVI';
@@ -157,8 +157,8 @@ var MapChart = function() {
                 var svgEnter = svg
                     .append('svg')
                     .attr('width', width)
-                    .attr('height', height);
-                
+                    .attr('height', height)
+
                 var div = d3.select('body')
                     .append('div')
                     .attr('class', 'tooltip')
@@ -273,6 +273,13 @@ var MapChart = function() {
                 svgEnter.select(".legendQuant")
                     .call(legend);
 
+                svgEnter.append('g').append('text')
+                    .attr('class', 'title')
+                    .attr('x', chartWidth / 2)
+                    .attr('y', 0 - (margin.top / 2) + 40)
+                    .attr('text-anchor', 'middle')
+                    .text(mapTitle);
+
                 //Default map drawing on load.
                 draw(fipsZhvi);
 
@@ -286,6 +293,7 @@ var MapChart = function() {
                         $(this).addClass('btn-primary');
                         switch(filter) {
                         case 'Total population':
+                            mapTitle = "Total Population"
                             //Get a new min and max every time a new filter is chosen. Probably used in a click function later.
                             getMinMax();
 
@@ -302,6 +310,7 @@ var MapChart = function() {
                                 .title('Total Population');
                             
                             svgEnter.select(".legendQuant").remove();
+                            svgEnter.select('.title').remove();
 
                             draw(fipsPop);
 
@@ -312,8 +321,17 @@ var MapChart = function() {
                             svgEnter.select(".legendQuant")
                                 .call(legend);
 
+                            svgEnter.append('g').append('text')
+                                .attr('class', 'title')
+                                .attr('x', chartWidth / 2)
+                                .attr('y', 0 - (margin.top / 2) + 40)
+                                .attr('text-anchor', 'middle')
+                                .text(mapTitle);
+
                             break;
                         case 'Median household income':
+                            mapTitle = "Median Household Income";
+
                             //Get a new min and max every time a new filter is chosen. Probably used in a click function later.
                             getMinMax();
 
@@ -330,6 +348,7 @@ var MapChart = function() {
                                 .title('Median Household Income');
 
                             svgEnter.select(".legendQuant").remove();
+                            svgEnter.select('.title').remove();
 
                             draw(fipsMedIncome);
 
@@ -341,8 +360,16 @@ var MapChart = function() {
                             svgEnter.select(".legendQuant")
                                 .call(legend);
 
+                            svgEnter.append('g').append('text')
+                                .attr('class', 'title')
+                                .attr('x', chartWidth / 2)
+                                .attr('y', 0 - (margin.top / 2) + 40)
+                                .attr('text-anchor', 'middle')
+                                .text(mapTitle);
+
                             break;
                         case 'Median home value':
+                            mapTitle = "Median Home Value";
                             //Get a new min and max every time a new filter is chosen. Probably used in a click function later.
                             getMinMax();
 
@@ -359,6 +386,7 @@ var MapChart = function() {
                                 .title('Median Home Value');
 
                             svgEnter.select(".legendQuant").remove();
+                            svgEnter.select('.title').remove();
 
                             draw(fipsMedHomeVal);
 
@@ -370,8 +398,16 @@ var MapChart = function() {
                             svgEnter.select(".legendQuant")
                                 .call(legend);
 
+                            svgEnter.append('g').append('text')
+                                .attr('class', 'title')
+                                .attr('x', chartWidth / 2)
+                                .attr('y', 0 - (margin.top / 2) + 40)
+                                .attr('text-anchor', 'middle')
+                                .text(mapTitle);
+
                             break;
                         case 'ZHVI':
+                            mapTitle = "Zillow Home Value Index"
                             //Get a new min and max every time a new filter is chosen. Probably used in a click function later.
                             getMinMax();
 
@@ -388,6 +424,7 @@ var MapChart = function() {
                                 .title('Zillow Home Value Index');
 
                             svgEnter.select(".legendQuant").remove();
+                            svgEnter.select('.title').remove();
 
                             draw(fipsZhvi);
 
@@ -397,6 +434,13 @@ var MapChart = function() {
 
                             svgEnter.select(".legendQuant")
                                 .call(legend);
+
+                            svgEnter.append('g').append('text')
+                                .attr('class', 'title')
+                                .attr('x', chartWidth / 2)
+                                .attr('y', 0 - (margin.top / 2) + 40)
+                                .attr('text-anchor', 'middle')
+                                .text(mapTitle);
 
                             break;
                         default:
