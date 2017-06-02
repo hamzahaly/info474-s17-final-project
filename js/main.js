@@ -34,7 +34,8 @@ $(function() {
 
         $('#map-display li').on('click', function() {
             var val = $(this).text();
-            console.log(val);
+            $('.btn-filter').removeClass('btn-primary');
+            $('.btn-filter').removeClass('active');
 
             if (val == 'United States') {
                 nationView = true;
@@ -84,12 +85,11 @@ $(function() {
                 charts.exit().remove();
             };
         });
+
+        //Controls getting the text value form the drop down. Change the indexhtml text to what ever you need to get the value.
+        $('#scatter-display li').on('click', function() {
+            var val = $(this).text();
+            console.log(val);
+        });
     });
-
-    // event listeners for UI components
-    $('.dropdown-toggle').click(function() {
-        // alert('I\'m clicked!');
-
-    });
-
 });

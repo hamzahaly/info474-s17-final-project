@@ -66,12 +66,18 @@ ul ul, ol ol, ul ol, ol ul {
 }
 
 hr {
-	border: 1px solid;
-	margin: -1px 0;
+	background-color: #333;
+	border: none;
+	color: #333;
+	height: 4px;
 }
 
 a, b, i, strong, em, small, code {
 	line-height: 0;
+}
+
+section {
+	margin: 1.5em auto;
 }
 
 sub, sup {
@@ -89,7 +95,32 @@ sub {
 }
 
 .btn {
+	box-shadow: 3px 3px 8px 1px rgba(0, 0, 0, 0.2);
 	margin: 8px 8px 8px 0;
+}
+
+button.active {
+	box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.2);	
+}
+
+button.mhi.active {
+	background-color: #DE2D26;
+	border-color: #DE2D26;
+}
+
+button.mhv.active {
+	background-color: #08519C;
+	border-color: #08519C;
+}
+
+button.totalpopulation.active {
+	background-color: #31A354;
+	border-color: #31A354;
+}
+
+button.zhvi.active {
+	background-color: #E6550D;
+	border-color: #E6550D;
 }
 
 .counties :hover {
@@ -119,4 +150,13 @@ div.tooltip {
 	border: 0px;      
 	border-radius: 8px;           
 	pointer-events: none;
+}
+
+.title {
+	font-family: 'Oswald', sans-serif;
+	font-weight: 700;
+	font-size: 1em;
+	line-height: 1.5em;
+	margin-top: 1.5em;
+	margin-bottom: 0em;	
 }
