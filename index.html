@@ -27,17 +27,20 @@
 <body>
     <div class="container">
         <div class="row">
-            <section class="col-md-9 col-md-offset-3">
-                <h1>Zillow Housing Data</h1>          
-            </section>
+            <header class="col-md-8 col-md-offset-3">
+                <h1>Zillow Housing Data</h1>
+                <p>
+                    The following visualization illustrates the correlation betweent he Zillow Housing Value Index (ZHVI) and three different variables (total population, median household income, median home value).
+                </p>     
+            </header>
         </div>
         <div class="row">
             <aside class="col-md-3">
                 <h5>Filters</h5>
-                <button type="button" class="btn btn-default btn-filter" value="Total population" id="totalpopulation">Total Population</button>
-                <button type="button" class="btn btn-default btn-filter" value="Median household income" id="mhi">Median household income</button>
-                <button type="button" class="btn btn-default btn-filter" value="Median home value" id="mhv">Median home value</button>
-                <button type="button" class="btn btn-default btn-filter" value="ZHVI" id="zhvi">ZHVI</button>
+                <button type="button" class="btn btn-default btn-filter totalpopulation" value="Total population">Total Population</button>
+                <button type="button" class="btn btn-default btn-filter mhi" value="Median household income">Median household income</button>
+                <button type="button" class="btn btn-default btn-filter mhv" value="Median home value">Median home value</button>
+                <button type="button" class="btn btn-default btn-filter zhvi" value="ZHVI">ZHVI</button>
 
                 <h5>Map Display</h5>
                 <div class="dropdown">
@@ -51,9 +54,24 @@
             </aside>
             <section class="col-md-9">
                 <div id="viz"></div>
+            </section>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="row">
+                <header class="col-md-8 col-md-offset-3">
+                    <h2>Zillow Housing Value Index Correlation</h2> 
+                </header>
+            </div>
+            <aside class="col-md-3">
+                <h5>Variables</h5>
+                <button type="button" class="btn btn-default btn-filter-scatter totalpopulation" value="scatter-population">Total Population</button>
+                <button type="button" class="btn btn-default btn-filter-scatter mhi" value="scatter-mhi">Median household income</button>
+                <button type="button" class="btn btn-default btn-filter-scatter mhv" value="scatter-mhv">Median home value</button>
+            </aside>
+            <section class="col-md-9">
                 <div id ="scatter"></div>   
             </section>
-            
         </div>
     </div>
 </body>

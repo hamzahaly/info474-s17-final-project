@@ -106,6 +106,5 @@ $(function() {
         .attr("cx", xMap)
         .attr("cy", yMap)
         .style("fill", function(d) { return color(cValue(d));});
-
   });
 });
