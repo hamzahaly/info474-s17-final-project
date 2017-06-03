@@ -203,7 +203,7 @@ var MapChart = function() {
                                 .duration(200)      
                                 .style("opacity", .9);     
 
-                                div.text(fipsCounty.get(d.id))
+                                div.text(fipsCounty.get(d.id) + " " + filter + ": " + fipsMap.get(d.id))
                                 .style("left", (d3.event.pageX) + "px")     
                                 .style("top", (d3.event.pageY - 28) + "px");    
                             })
