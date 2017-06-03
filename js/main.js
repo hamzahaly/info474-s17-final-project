@@ -87,9 +87,13 @@ $(function() {
         });
 
         //Controls getting the text value form the drop down. Change the indexhtml text to what ever you need to get the value.
-        $('#scatter-display li').on('click', function() {
-            var val = $(this).text();
-            console.log(val);
+        var scatterplotFilters = document.querySelectorAll('.btn-filter-scatter');
+
+        scatterplotFilters.forEach(function(e) {
+            e.onclick = function() {
+                var val = this.value;
+                alert(val);
+            }
         });
     });
 });
