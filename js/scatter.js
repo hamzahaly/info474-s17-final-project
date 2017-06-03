@@ -115,8 +115,8 @@ $(function() {
   }
 
   scatterp(pop);
-  scatterp(mhv);
   scatterp(mhi);
+  scatterp(mhv);
 
   
 

@@ -92,7 +92,6 @@ $(function() {
         scatterplotFilters.forEach(function(e) {
             e.onclick = function() {
                 var val = this.value;
-                alert(val);
             }
         });
     });
